@@ -13,7 +13,7 @@ if (marks > 79){
 }else{
     grade = 'E'
 }
-console.log('Grade is ${grade}');
+console.log(`Grade is ${grade}`);
 function validateMarks(studentMarks) {
     if (studentMarks.length === 0 || Number.isNaN(Number(studentMarks)) || studentMarks < 0 || studentMarks > 100) {
         if (confirm('Invalid input. Enter valid student marks (between 0-100). Try again?')) {
