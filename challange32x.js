@@ -1,71 +1,161 @@
-function calculateNetSalary(basicSalary, benefits) {
-  const NSSF_RATE = 0.06;
-  const grossSalary = basicSalary + benefits;
+// Sample output
+console.log(getNetSalary(20000, 15000))
 
+/**
+ * Returns a summary of employee net salary information.
+ * Prints out net salary of an employee.
+ * Prints out salary information
+ * 
+ * @param {number} employeeBasicSalary Basic salary of employee
+ * @param {number} employeeBenefits Additional benefits and allowances to employee
+ * @returns {object} employee net salary information including deductions e.g. taxes as an object
+ */
+function getNetSalary(employeeBasicSalary, employeeBenefits) {
+    let employeeGrossIncome = employeeBasicSalary + employeeBenefits
+    let NHIF = getNHIFContribution(employeeGrossIncome)
+    let NSSF = getNSSFContribution(employeeGrossIncome)
+    let PAYE = getPAYE(employeeGrossIncome, NHIF, NSSF)
 
-  const nhifDeductions = getNHIFDeduction(grossSalary)
-  const nssfDeductions = ((grossSalary * NSSF_RATE) > 6000) ? 6000 : grossSalary * NSSF_RATE;
-  const deduction = nhifDeductions + nssfDeductions
-  const paye = getPAYE(grossSalary, deduction)
-  const totalDeductions = paye + deduction
-  const netSalary = grossSalary - totalDeductions
-  console.log(netSalary);
-}
-function getNHIFDeduction(grossSalary) {
-  let deduction
+    employeeTotalDeductions = NHIF + NSSF + PAYE
+    employeeNetSalary = employeeGrossIncome - employeeTotalDeductions
 
-  if (grossSalary <= 5999) {
-    deduction = 150
-  } else if (grossSalary >= 6000 && grossSalary <= 7999) {
-    deduction = 300
-  } else if (grossSalary >= 8000 && grossSalary <= 11999) {
-    deduction = 400
-  } else if (grossSalary >= 12000 && grossSalary <= 14999) {
-    deduction = 500
-  } else if (grossSalary >= 15000 && grossSalary <= 19999) {
-    deduction = 600
-  } else if (grossSalary >= 20000 && grossSalary <= 24999) {
-    deduction = 750
-  } else if (grossSalary >= 25000 && grossSalary <= 29999) {
-    deduction = 850
-  } else if (grossSalary >= 30000 && grossSalary <= 34999) {
-    deduction = 900
-  } else if (grossSalary >= 35000 && grossSalary <= 39999) {
-    deduction = 950
-  } else if (grossSalary >= 40000 && grossSalary <= 44999) {
-    deduction = 1000
-  } else if (grossSalary >= 45000 && grossSalary <= 49999) {
-    deduction = 1100
-  } else if (grossSalary >= 50000 && grossSalary <= 59999) {
-    deduction = 1200
-  } else if (grossSalary >= 60000 && grossSalary <= 69999) {
-    deduction = 1300
-  } else if (grossSalary >= 70000 && grossSalary <= 79999) {
-    deduction = 1400
-  } else if (grossSalary >= 80000 && grossSalary <= 89999) {
-    deduction = 1500
-  } else if (grossSalary >= 90000 && grossSalary <= 99999) {
-    deduction = 1600
-  } else if (grossSalary >= 100000) {
-    deduction = 1700
-  }
-  return deduction;
+    let salarySummary = {
+        basicSalary: employeeBasicSalary,
+        benefits: employeeBenefits,
+        grossSalary: employeeGrossIncome,
+        deductions: {
+            insuranceRelief: NHIF,
+            employeePensionContribution: NSSF,
+            employeePAYE: PAYE
+        },
+        totalDeductions: employeeTotalDeductions,
+        netSalary: employeeNetSalary
+    }
 
-}
-function getPAYE(grossSalary, deduction) {
-  let paye
-  const relief = 2400
-  const taxableincome = grossSalary - deduction;
-  if (taxableincome <= 24000) {
-    paye = taxableincome * 0.1
-  } else if (taxableincome >= 24001 && taxableincome <= 32333) {
-    paye = taxableincome * 0.25
-  } else if (taxableincome > 32334) {
-    paye = taxableincome * 0.3
-  }
-  paye = paye - relief
+    console.log(`Net Salary: ${employeeNetSalary}`);
+    printSalarySummary(salarySummary)
 
-  paye = (paye <= 2400) ? 0 : paye
-  return paye
+    return salarySummary
 }
 
+/**
+ * Calculates expected NHIF deduction from employee salary
+ * 
+ * @param {number} employeeGrossIncome Employee gross salary
+ * @returns {number} NHIF deduction amount
+ */
+function getNHIFContribution(employeeGrossIncome) {
+
+    const grossIncome = employeeGrossIncome
+    let NHIFContribution
+
+    if (grossIncome <= 5999) {
+        NHIFContribution = 150
+    } else if (grossIncome >= 6000 && grossIncome <= 7999) {
+        NHIFContribution = 300
+    } else if (grossIncome >= 8000 && grossIncome <= 11999) {
+        NHIFContribution = 400
+    } else if (grossIncome >= 12000 && grossIncome <= 14999) {
+        NHIFContribution = 500
+    } else if (grossIncome >= 15000 && grossIncome <= 19999) {
+        NHIFContribution = 600
+    } else if (grossIncome >= 20000 && grossIncome <= 24999) {
+        NHIFContribution = 750
+    } else if (grossIncome >= 25000 && grossIncome <= 29999) {
+        NHIFContribution = 850
+    } else if (grossIncome >= 30000 && grossIncome <= 34999) {
+        NHIFContribution = 900
+    } else if (grossIncome >= 35000 && grossIncome <= 39999) {
+        NHIFContribution = 950
+    } else if (grossIncome >= 40000 && grossIncome <= 44999) {
+        NHIFContribution = 1000
+    } else if (grossIncome >= 45000 && grossIncome <= 49999) {
+        NHIFContribution = 1100
+    } else if (grossIncome >= 50000 && grossIncome <= 59999) {
+        NHIFContribution = 1200
+    } else if (grossIncome >= 60000 && grossIncome <= 69999) {
+        NHIFContribution = 1300
+    } else if (grossIncome >= 70000 && grossIncome <= 79999) {
+        NHIFContribution = 1400
+    } else if (grossIncome >= 80000 && grossIncome <= 89999) {
+        NHIFContribution = 1500
+    } else if (grossIncome >= 90000 && grossIncome <= 99999) {
+        NHIFContribution = 1600
+    } else if (grossIncome >= 100000) {
+        NHIFContribution = 1700
+    }
+
+    return NHIFContribution
+}
+
+/**
+ * Calculates expected NSSF deduction from employee salary
+ * 
+ * @param {number} employeeGrossIncome Employee gross salary
+ * @returns {number} NSSF deduction amount
+ */
+function getNSSFContribution(employeeGrossIncome) {
+    // NSSF - 6 percent employee contribution, limit 6000
+    let NSSFContribution = employeeGrossIncome * 0.06
+    NSSFContribution = Number(NSSFContribution.toFixed(2))
+    return (NSSFContribution < 6000) ? NSSFContribution : 6000;
+}
+
+/**
+ * Calculates expected PAYE (Pay-As-You-Earn) deduction from employee salary
+ * 
+ * @param {number} employeeGrossIncome Employee gross salary
+ * @param  {...any} totalDeductions Employee pre-tax(before PAYE) deductions as an array
+ * @returns PAYE deduction amount
+ */
+function getPAYE(employeeGrossIncome, ...totalDeductions) {
+    const personalRelief = 2400
+    const deductions = totalDeductions.reduce((a, b) => a + b, 0)
+    const taxableIncome = employeeGrossIncome - deductions
+    let monthlyPAYEContribtion
+
+    // Minimum monthly taxable income is KES. 24,001
+    // Individuals earning less monthly exempt from income tax
+    // since personal relief is greater than tax
+    if (taxableIncome <= 24000) return 0
+
+    if (taxableIncome <= 24000) {
+        monthlyPAYEContribtion = taxableIncome * 0.1;
+    } else if (taxableIncome > 24000 && taxableIncome <= 32333) {
+        monthlyPAYEContribtion = taxableIncome * 0.25
+    } else if (taxableIncome > 32333) {
+        monthlyPAYEContribtion = taxableIncome * 0.3
+    }
+
+    monthlyPAYEContribtion = monthlyPAYEContribtion - personalRelief
+    monthlyPAYEContribtion = Number(monthlyPAYEContribtion.toFixed(2))
+    return monthlyPAYEContribtion
+}
+
+/**
+ * Print salary summary information
+ * 
+ * @param {object} salarySummary Object containing salary information
+ */
+function printSalarySummary(salarySummary) {
+    console.log(`
+    Salary summary:
+
+        Basic Salary: ${salarySummary.basicSalary}
+        Benefits: ${salarySummary.benefits}
+
+        Gross Salary: ${salarySummary.grossSalary}
+
+        --------------------------
+
+        Deductions:
+            NSSF: ${salarySummary.deductions.employeePensionContribution}
+            NHIF: ${salarySummary.deductions.insuranceRelief}
+            PAYE: ${salarySummary.deductions.employeePAYE}
+        Total deductions: ${salarySummary.totalDeductions}
+
+        ---------------------------
+
+        Net Salary: ${salarySummary.netSalary}
+        `);
+}
